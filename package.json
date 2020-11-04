@@ -1,0 +1,17 @@
+{
+  "name": "bogosortbot-twitter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "oauth": "^0.9.15",
+    "save": "^2.4.0",
+    "twit": "^2.2.11"
+  }
+}
