@@ -8,17 +8,25 @@ const { consumer_key,
 		access_token_secret } = require('./config.js');
 
 function main(){
-	/**
-	 * var data = [];
-	for(var i = min; i <= max; i++) {
-		data.push(i);
+	//	Argument Handling!
+	try{
+		if (process.argv.length >= 2) {
+			//	If user supplies 1 or more arguments (run "node . these are args")
+			data = [];
+			var i = 2;
+			while (process.argv[i]){
+				data.push(process.argv[i]);
+				i++;
+			}
+		}
+	} catch {
+		// If for some reason the user gets an error
+		console.log("Uh oh... there was an error (/).(\\)");
+		process.exit();
 	}
-	**/
-	//data = "new format!";
-	//bogoSort(data);
-	data = [1,3,5,7,11,13,17,19, 23, 25, 29, 31, 35, 37, 41, 43];
-	shuffle(data);
-	sendTweet(bogoSort(data));
+
+	bogoSort(data); // BogoSort without tweeting (Good for Debugging)
+	//sendTweet(bogoSort(data)); // BogoSort and tweet!
 }
 
 // Fisher-Yates Shuffle as found at https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array
@@ -82,22 +90,25 @@ String.prototype.toHHMMSS = function () {
 
 function bogoSort(data){
 	// If no data supplied to bogoSort
-	if(!data){
-		console.log("No data given, generating simple array...")
-		data = [];
-		for(var i = 0; i < 10; i++)
-			data.push(i);
+	if(data.length == 0){
+		const quantity = 10;
+		console.log("No data given, generating {",quantity,"} item array...");
+		data = Array.from(Array(quantity).keys());
+		data = shuffle(data);
 	}
 
-	// If a string, turn into array of characters
+	// If a string, turn into array
 	if(typeof data === 'string' || data instanceof String){
 		data = data.split('');
 	}
 
+	// Initiate the Tweet Text
 	var output = "";
+	output += ("INPUT: "+data.join(' ')+"\n");
+	timestamp = new Date().toISOString().replace('T', ' ').substr(0, 19);
+	console.log("[",timestamp,"]",output);
 
-	output += ("INPUT: [ "+data+" ]\n");
-
+	// Let the Bogo Sort Commence!
 	var counter = 0;
 	var start = performance.now();
 	while(!isSorted(data)){
@@ -107,12 +118,12 @@ function bogoSort(data){
 	var end = performance.now();
 	var time = end - start;
 
+	// Append the statistics to the Tweet!
 	output += ("Bogo Sort Bot sorted the list in:\n");
 	//output += (counter.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" tries and "+time.toFixed(3)+" ms!\n");
 	output += (counter.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" shuffles and \n"+time.toString().toHHMMSS()+"\n");
-	output += ("SORTED: "+data);
-	console.log(output);
-	console.log();
+	output += ("SORTED: "+data.join(' '));
+	console.log("-------Tweet:-------\n"+output+"\n--------------------");
 	return output;
 }
 
