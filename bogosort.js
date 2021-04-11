@@ -7,21 +7,27 @@ const { consumer_key,
 		access_token,
 		access_token_secret } = require('./config.js');
 
-function main(){
+function main(tweet_text){
 	//	Argument Handling!
+	var data = [];
+	if(tweet_text){data=tweet_text;}else{return 0;}
+	console.log(tweet_text,process.argv);
 	try{
-		if (process.argv.length >= 2) {
+		if ( (process.argv.length === 3) && (!isNaN(process.argv[2])) ){
+			const quantity = Number(process.argv[2]);
+			var data = Array.from(Array(quantity).keys());
+			data = shuffle(data);
+		} else if (process.argv.length >= 3) {
 			//	If user supplies 1 or more arguments (run "node . these are args")
-			data = [];
 			var i = 2;
 			while (process.argv[i]){
 				data.push(process.argv[i]);
 				i++;
 			}
 		}
-	} catch {
+	} catch(e) {
 		// If for some reason the user gets an error
-		console.log("Uh oh... there was an error (/).(\\)");
+		console.log("Uh oh... there was an error (/).(\\)\n",e);
 		process.exit();
 	}
 
@@ -90,17 +96,26 @@ String.prototype.toHHMMSS = function () {
 
 function bogoSort(data){
 	// If no data supplied to bogoSort
+	/*
 	if(data.length == 0){
 		const quantity = 10;
 		console.log("No data given, generating {",quantity,"} item array...");
 		data = Array.from(Array(quantity).keys());
 		data = shuffle(data);
 	}
-
+	*/
 	// If a string, turn into array
 	if(typeof data === 'string' || data instanceof String){
 		data = data.split('');
 	}
+	// If too much data to fit in tweet
+	totalLength = data.join(' ').length;
+	if(totalLength >= 107){
+		var output = "Please submit up to 106 characters!";
+		console.log(output);
+		return output;
+	}
+	console.log("Total input characters:",totalLength);
 
 	// Initiate the Tweet Text
 	var output = "";
@@ -119,12 +134,14 @@ function bogoSort(data){
 	var time = end - start;
 
 	// Append the statistics to the Tweet!
-	output += ("Bogo Sort Bot sorted the list in:\n");
+	output += ("Sorted the list in:\n");
 	//output += (counter.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" tries and "+time.toFixed(3)+" ms!\n");
 	output += (counter.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+" shuffles and \n"+time.toString().toHHMMSS()+"\n");
 	output += ("SORTED: "+data.join(' '));
-	console.log("-------Tweet:-------\n"+output+"\n--------------------");
+	//console.log("-------Tweet:-------\n"+output+"\n--------------------");
 	return output;
 }
 
 main();
+
+module.exports = { main, bogoSort};

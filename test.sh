@@ -4,9 +4,9 @@
 nightmare=$(head -c 240 < /dev/zero | tr '\0' '\141')
 node ~/bogosortbot-twitter/. $nightmare
 
-declare -a tests=("this is a sentence" "apple" "1 2 3 4 5" 6 7 8 9)
+declare -a tests=("this is a sentence" "apple" "1 2 3 4 5")
 
 for i in "${tests[@]}"
 do 
-    node ~/bogosortbot-twitter/. $i 
+    node ~/bogosortbot-twitter/bogosort.js $i 
 done
